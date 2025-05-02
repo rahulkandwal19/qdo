@@ -181,6 +181,10 @@ let swapConnections = [];  // Store SWAP gate polyline connections
 
 let linkData = [];  // Initialize linkData array for connection data
 
+
+
+
+
 function drawLink(fromGate, toGate) {
   if (Math.abs(fromGate.x() - toGate.x()) < 10) {
     toGate.x(fromGate.x());
@@ -197,15 +201,21 @@ function drawLink(fromGate, toGate) {
     lineJoin: 'round'
   });
 
-  // Add the connection to linkData
+  // Add the connection to linkData for both SWAP and CNOT gates
   const fromRow = Math.round((fromGate.y() + 20) / rowHeight);
   const toRow = Math.round((toGate.y() + 20) / rowHeight);
+
+  // Check gate types
+  const fromLabel = fromGate.findOne('Text')?.text() || "Unknown";
+  const toLabel = toGate.findOne('Text')?.text() || "Unknown";
+
+  // Assuming your 'SWAP' and 'CNOT' types are already correctly assigned
   linkData.push({
     from: fromGate._id,
     to: toGate._id,
-    fromLabel: fromGate.findOne('Text')?.text() || "Unknown",
-    toLabel: toGate.findOne('Text')?.text() || "Unknown",
-    type: 'SWAP' // or other types like CNOT
+    fromLabel: fromLabel,
+    toLabel: toLabel,
+    type: fromLabel === 'SWAP' ? 'SWAP' : (fromLabel === 'CNOT' ? 'CNOT' : 'Unknown')
   });
 
   layer.add(line);
@@ -214,12 +224,14 @@ function drawLink(fromGate, toGate) {
 }
 
 
+
 function printGatePositionsMatrix() {
   const rows = 6;
   const cols = 14;
   const matrix = Array.from({ length: rows }, () => Array(cols).fill(0));
   const gateMap = new Map();
   const gateRowMap = new Map();
+  const gateColMap = new Map();  // ✅ NEW
 
   layer.getChildren().forEach(child => {
     if (child instanceof Konva.Group) {
@@ -237,6 +249,7 @@ function printGatePositionsMatrix() {
 
           gateMap.set(child._id, label);
           gateRowMap.set(child._id, row);
+          gateColMap.set(child._id, col);  // ✅ Add column info
         }
       }
     }
@@ -254,24 +267,57 @@ function printGatePositionsMatrix() {
       const toRow = gateRowMap.get(link.to);
 
       console.log(
-        `${i + 1}: [${fromLabel}] (row ${fromRow}) -> [${toLabel}] (row ${toRow}), type: ${link.type}`
+        `Gate: ${link.type}, From: ${fromLabel}, To: ${toLabel}`
       );
 
-      // If connection is SWAP or CNOT, log the row pair separately
       if (link.type === 'SWAP' || link.type === 'CNOT') {
         console.log(`    Row Pair (${link.type}): (${fromRow}, ${toRow})`);
       }
     });
-  }
 
-  // Also include any SWAP connections tracked manually
-  if (swapConnections.length > 0) {
-    console.log("\nSWAP Gate Row Pairs:");
-    swapConnections.forEach((conn, idx) => {
-      console.log(`${idx + 1}: [${conn.fromLabel}] (row ${conn.from}) <=> [${conn.toLabel}] (row ${conn.to})`);
-    });
+    // ✅ Call vertical matrix calculator
+    getVerticalGateConnectionMatrices(linkData, gateRowMap, gateColMap);
   }
 }
+
+
+
+
+//return vertical rows
+function getVerticalGateConnectionMatrices(links, gateRowMap, gateColMap) {
+  const rows = 6;
+  const cols = 14;
+
+  const swapMatrix = Array.from({ length: rows }, () => Array(cols).fill(0));
+  const cnotMatrix = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+  links.forEach(link => {
+    const type = link.type?.toLowerCase(); // Ensure type is in lowercase
+    const fromRow = gateRowMap.get(link.from);
+    const toRow = gateRowMap.get(link.to);
+    const fromCol = gateColMap.get(link.from);
+    const toCol = gateColMap.get(link.to);
+
+    // Must be vertically adjacent and same column
+    if (fromCol === toCol && Math.abs(fromRow - toRow) === 1) {
+      const topRow = Math.min(fromRow, toRow);
+
+      if (type === 'swap') {
+        swapMatrix[topRow][fromCol] = 1;
+      } else if (type === 'cnot') {
+        cnotMatrix[topRow][fromCol] = 1;
+      }
+    }
+  });
+
+  console.log("SWAP Matrix:");
+  console.table(swapMatrix);
+
+  console.log("CNOT Matrix:");
+  console.table(cnotMatrix);
+}
+
+
 
 
 document.getElementById('saveAllBtn').addEventListener('click', printGatePositionsMatrix);
