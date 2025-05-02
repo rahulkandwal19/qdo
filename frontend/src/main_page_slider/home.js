@@ -25,7 +25,7 @@ function drawGridAndLabels() {
 
     const line = new Konva.Line({
       points: [0, y, stage.width(), y],
-      stroke: 'black',
+      stroke: '#ccc',
       strokeWidth: 2
     });
 
@@ -34,7 +34,7 @@ function drawGridAndLabels() {
       y: y - 20,
       text: '[ 0 ]',
       fontSize: 16,
-      fill: 'blue',
+      fill: '#140d79',
     });
 
     label.on('click', () => {
@@ -109,7 +109,7 @@ function addGate(label) {
   const fixButton = new Konva.Text({
     text: 'Lock Position',
     fontSize: 12,
-    fill: 'blue',
+    fill: '#140d79',
     x: 65,
     y: 0
   });
@@ -176,6 +176,10 @@ function addGate(label) {
 
   layer.draw();
 }
+let swapConnections = [];  // Store SWAP gate polyline connections
+
+
+let linkData = [];  // Initialize linkData array for connection data
 
 function drawLink(fromGate, toGate) {
   if (Math.abs(fromGate.x() - toGate.x()) < 10) {
@@ -193,66 +197,85 @@ function drawLink(fromGate, toGate) {
     lineJoin: 'round'
   });
 
+  // Add the connection to linkData
+  const fromRow = Math.round((fromGate.y() + 20) / rowHeight);
+  const toRow = Math.round((toGate.y() + 20) / rowHeight);
+  linkData.push({
+    from: fromGate._id,
+    to: toGate._id,
+    fromLabel: fromGate.findOne('Text')?.text() || "Unknown",
+    toLabel: toGate.findOne('Text')?.text() || "Unknown",
+    type: 'SWAP' // or other types like CNOT
+  });
+
   layer.add(line);
   layer.moveToTop();
   layer.draw();
 }
 
+
 function printGatePositionsMatrix() {
   const rows = 6;
   const cols = 14;
-  const matrix = Array.from({ length: rows }, () => Array(cols).fill('0'));  // Initialize with '0'
+  const matrix = Array.from({ length: rows }, () => Array(cols).fill(0));
+  const gateMap = new Map();
+  const gateRowMap = new Map();
 
   layer.getChildren().forEach(child => {
     if (child instanceof Konva.Group) {
       const labelNode = child.findOne('Text');
       if (labelNode) {
-        const label = labelNode.text();
+        const label = labelNode.text().trim();
         const x = child.x();
         const y = child.y();
 
         const col = Math.floor(x / colWidth);
-        const row = Math.round((y + 20) / rowHeight);  // Adjust the row position due to offset
+        const row = Math.round((y + 20) / rowHeight);
 
         if (row >= 0 && row < rows && col >= 0 && col < cols) {
-          matrix[row][col] = label;  // Mark the position with gate label
+          matrix[row][col] = label;
+
+          gateMap.set(child._id, label);
+          gateRowMap.set(child._id, row);
         }
       }
     }
   });
 
   console.log("Gate Placement Matrix:");
-  matrix.forEach(row => console.log(row));  // Print the 2D matrix
+  matrix.forEach(row => console.log(row));
 
-  fetch("https://5831-103-99-14-202.ngrok-free.app/executeCircuit",
-    {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ array: matrix })
+  if (Array.isArray(linkData) && linkData.length > 0) {
+    console.log("\nConnected Lines (Start Row -> End Row with Gate Labels):");
+    linkData.forEach((link, i) => {
+      const fromLabel = gateMap.get(link.from) || "Unknown";
+      const toLabel = gateMap.get(link.to) || "Unknown";
+      const fromRow = gateRowMap.get(link.from);
+      const toRow = gateRowMap.get(link.to);
+
+      console.log(
+        `${i + 1}: [${fromLabel}] (row ${fromRow}) -> [${toLabel}] (row ${toRow}), type: ${link.type}`
+      );
+
+      // If connection is SWAP or CNOT, log the row pair separately
+      if (link.type === 'SWAP' || link.type === 'CNOT') {
+        console.log(`    Row Pair (${link.type}): (${fromRow}, ${toRow})`);
+      }
+    });
   }
-  ).then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error('Something went wrong');
-  })
-  .then((responseJson) => {
-    console.log(responseJson);
-  })
-  .catch((error) => {
-      // Show Server Not Responded
-  });
+
+  // Also include any SWAP connections tracked manually
+  if (swapConnections.length > 0) {
+    console.log("\nSWAP Gate Row Pairs:");
+    swapConnections.forEach((conn, idx) => {
+      console.log(`${idx + 1}: [${conn.fromLabel}] (row ${conn.from}) <=> [${conn.toLabel}] (row ${conn.to})`);
+    });
+  }
 }
 
 
-
-
-
-
-
 document.getElementById('saveAllBtn').addEventListener('click', printGatePositionsMatrix);
+
 
 function clearCanvas() {
   layer.getChildren().forEach(child => {
@@ -277,7 +300,7 @@ function sendPositionToBackend(x, y, label) {
 
 // ApexCharts Qubit Probabilities
 const chartOptions = {
-  chart: { type: 'bar', height: 501 },
+  chart: { type: 'bar', height: 500 },
   series: [{ data: [0.6, 0.2] }],
   xaxis: { categories: ['|0⟩', '|1⟩'] },
   title: { text: 'Qubit Probability' }
