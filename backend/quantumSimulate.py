@@ -62,4 +62,4 @@ def generate_res():
     return jsonify(result)
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
-    app.run(threaded=True)
+    app.run(port=80,threaded=True)

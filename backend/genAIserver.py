@@ -86,4 +86,4 @@ def checkServerIsOn():
     return "Hello From QDo's genAI Chat Server !"
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
-    app.run(threaded=True)
+    app.run(port='80',threaded=True)

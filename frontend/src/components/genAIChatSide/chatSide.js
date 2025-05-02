@@ -88,7 +88,7 @@ function sendQuery(){
   text = document.getElementById("askTextBox").value;
   addMessageCardUser(text);
   
-  fetch("http://127.0.0.1:5000/generate?question="+text).then((response) => {
+  fetch("https://7c0f-103-99-14-202.ngrok-free.app/generate?question="+text).then((response) => {
     if (response.ok) {
       return response.json();
     }

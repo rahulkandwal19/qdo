@@ -224,7 +224,7 @@ function printGatePositionsMatrix() {
   console.log("Gate Placement Matrix:");
   matrix.forEach(row => console.log(row));  // Print the 2D matrix
 
-  fetch("http://127.0.0.1:5000/executeCircuit",
+  fetch("https://5831-103-99-14-202.ngrok-free.app/executeCircuit",
     {
       method: "POST",
       headers: {
