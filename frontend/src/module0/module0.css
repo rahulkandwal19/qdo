@@ -5,15 +5,15 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'franklin';
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
 .sidebar {
-  background-color: #001aa2;
-  color: white;
+  background-color: #140d79;
+  color: #ccc;
   padding: 40px 20px;
   width: 250px;
   display: flex;
@@ -42,7 +42,7 @@ body {
 }
 
 .header {
-  background-color: #001aa2;
+  background-color: #140d79;
   color: white;
   padding: 20px;
   text-align: center;
@@ -63,15 +63,15 @@ body {
 }
 
 .quiz-box {
-  background-color: #2e34ff;
-  color: white;
-  border-radius: 12px;
+  background-color: #b9effc;
+  color: black;
+
   padding: 30px;
   margin-top: 60px;
   margin-bottom: 40px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; 
   flex-wrap: wrap;
 }
 
@@ -92,7 +92,7 @@ body {
 
 .quiz-box button {
   margin-top: 10px;
-  background-color: #00cc66;
+  background-color: #140d79;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -108,7 +108,7 @@ body {
 }
 
 .game-button {
-  background-color: #ff6600;
+  background-color: #140d79;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -117,6 +117,9 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+.game-button:hover {
+  background-color: #f8bf74;
 }
 
 @media (max-width: 768px) {

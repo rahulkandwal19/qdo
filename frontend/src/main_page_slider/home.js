@@ -277,7 +277,7 @@ function sendPositionToBackend(x, y, label) {
 
 // ApexCharts Qubit Probabilities
 const chartOptions = {
-  chart: { type: 'bar', height: 500 },
+  chart: { type: 'bar', height: 501 },
   series: [{ data: [0.6, 0.2] }],
   xaxis: { categories: ['|0⟩', '|1⟩'] },
   title: { text: 'Qubit Probability' }
