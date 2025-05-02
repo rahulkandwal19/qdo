@@ -1,0 +1,58 @@
+#menuBtn {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 1001;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+
+  .side-menu {
+    position: fixed;
+    top: 0;
+    right: -580px;
+    width: 600px;
+    height: 100%;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.5);
+    transition: right 0.3s ease;
+    z-index: 1000;
+  }
+  
+  .side-menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .side-menu ul li {
+    margin: 20px 0;
+  }
+  
+  .side-menu ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .side-menu.show {
+    right: 0;
+  }
+  
+  #closeBtn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    float: right;
+    cursor: pointer;
+  }
+  

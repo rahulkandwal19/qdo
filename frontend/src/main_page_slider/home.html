@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Q-Lab Circuit Builder</title>
+  <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <link rel="stylesheet" href="home.css" />
+</head>
+<body>
+  <header>
+    <h2>Q - Lab</h2>
+  </header>
+
+  <div class="box">
+    <div id="gate_button">
+      <button onclick="addGate('X')" class="gate">Add X</button>
+      <button onclick="addGate('Y')" class="gate">Add Y</button>
+      <button onclick="addGate('Z')" class="gate">Add Z</button>
+      <button onclick="addGate('H')" class="gate">Add H</button>
+      <button onclick="addGate('S')" class="gate">Add S</button>
+      <button onclick="addGate('T')" class="gate">Add T</button>
+      <button onclick="addGate('ROT-X')" class="gate">Add ROT-X</button>
+      <button onclick="addGate('ROT-Y')" class="gate">Add ROT-Y</button>
+      <button onclick="addGate('ROT-Z')" class="gate">Add ROT-Z</button>
+      <button onclick="addGate('CNOT')" class="gate">Add CNOT</button>
+      <button onclick="addGate('I')" class="gate">Add I</button>
+      <button onclick="addGate('SWAP')" class="gate">Add SWAP</button>
+    </div>
+
+    <div id="konva-canvas"></div>
+    <div id="row-coordinates-container" class="box"></div>
+    <div id="statusText"></div>
+
+    <button id="clearBtn">Clear</button>
+    <button id="saveAllBtn">Execute</button>
+  </div>
+
+  <div id="chart" class="box"></div>
+
+  <script src="home.js"></script>
+</body>
+</html>

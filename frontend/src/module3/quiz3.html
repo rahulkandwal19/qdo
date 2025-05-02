@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quantum Quiz</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body, html {
+      height: 100%;
+      background-color: #000099;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      color: white;
+    }
+
+    .question {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .option {
+      background-color: #ffeeee;
+      color: black;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .option.correct {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .option.wrong {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .answer {
+      margin-top: 10px;
+      font-size: 1.3rem;
+      color: yellow;
+      font-weight: bold;
+      min-height: 30px;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: white;
+      color: #000099;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #ddddff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="question-container">
+      <!-- Question and options will render here -->
+    </div>
+    <div class="answer" id="answer"></div>
+    <div class="navigation">
+      <button onclick="handleNext()" id="nextBtn">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+    {
+    text: "Q-1. : What is the main purpose of Shor’s Algorithm?",
+    options: [
+      { label: "A", text: "Searching a database" },
+      { label: "B", text: "Factoring large numbers quickly " },
+      { label: "C", text: "Measuring qubit states" },
+    ],
+    correct: "B"
+  },
+  {
+    text: "Q-2. : What does Grover’s Algorithm help with?",
+    options: [
+      { label: "A", text: "Encrypting data" },
+      { label: "B", text: "Factoring prime numbers" },
+      { label: "C", text: "Searching unsorted databases efficiently" },
+    ],
+    correct: "C"
+  },
+  {
+    text: "Q-3. :  What role does the Quantum Fourier Transform (QFT) play in quantum algorithms?",
+    options: [
+      { label: "A", text: " It enables phase estimation and other core operations" },
+      { label: "B", text:  "It creates qubit entanglement" },
+      { label: "C", text: "It measures the output of algorithms" },
+  ],
+    correct: "A"
+  },
+  {
+    text: "Q-4. :What was significant about the Deutsch-Jozsa Algorithm?",
+    options: [
+      { label: "A", text: " It was the first to show a clear quantum speedup " },
+      { label: "B", text: " It solved all classical problems" },
+      { label: "C", text: "  It replaced the Hadamard gate" },
+    ],
+    correct: "A"
+  },
+  {
+    text: "Q-5. : What do VQE and QAOA have in common?",
+    options: [
+      { label: "A", text: "They are both classical algorithms" },
+      { label: "B", text: "They are hybrid algorithms combining classical and quantum techniques" },
+      { label: "C", text: "They only work on supercomputers" },
+    ],
+    correct: "B"
+  }
+    ];
+
+    let currentQuestion = 0;
+    let answered = false;
+
+    function renderQuestion() {
+      const container = document.getElementById("question-container");
+      const q = questions[currentQuestion];
+      answered = false;
+      document.getElementById("answer").textContent = "";
+
+      container.innerHTML = `
+        <div class="question">${q.text}</div>
+        ${q.options.map(opt => `
+          <div class="option" onclick="checkAnswer(this, '${opt.label}')">${opt.label}. ${opt.text}</div>
+        `).join("")}
+      `;
+
+      const nextBtn = document.getElementById("nextBtn");
+      nextBtn.textContent = currentQuestion === questions.length - 1 ? "Back to Modules" : "Next";
+
+    }
+
+    function checkAnswer(element, choice) {
+      if (answered) return;
+      answered = true;
+
+      const correct = questions[currentQuestion].correct;
+      const options = document.querySelectorAll('.option');
+
+      options.forEach(opt => {
+        opt.classList.remove('correct', 'wrong');
+        opt.style.pointerEvents = 'none';
+      });
+
+      if (choice === correct) {
+        element.classList.add('correct');
+        document.getElementById('answer').textContent = `Correct! The right answer is ${getOptionText(correct)}.`;
+      } else {
+        element.classList.add('wrong');
+        options.forEach(opt => {
+          if (opt.textContent.startsWith(correct)) {
+            opt.classList.add('correct');
+          }
+        });
+        document.getElementById('answer').textContent = `Wrong! The correct answer is ${getOptionText(correct)}.`;
+      }
+    }
+
+    function getOptionText(label) {
+      const q = questions[currentQuestion];
+      return q.options.find(opt => opt.label === label).text;
+    }
+
+    function handleNext() {
+      if (currentQuestion === questions.length - 1) {
+        window.location.href = "module3.html"; // 
+      } else {
+        currentQuestion++;
+        renderQuestion();
+      }
+    }
+
+    // Initial render
+    renderQuestion();
+  </script>
+</body>
+</html>
+
+
+
+

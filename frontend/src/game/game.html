@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Gate Puzzle Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="../components/genAIChatSide/chatSide.css" />
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Quantum Gate Puzzle Game</h1>
+    <p>Select a gate to solve the puzzle. Arrange the matrix pieces to match the gate!</p>
+    
+    <!-- Gate Selection -->
+    <div id="gate-selection">
+      <button onclick="startPuzzle('CNOT')">CNOT</button>
+      <button onclick="startPuzzle('X')">X Gate</button>
+      <button onclick="startPuzzle('H')">H Gate</button>
+      <button onclick="startPuzzle('SWAP')">SWAP Gate</button>
+      <button onclick="startPuzzle('Y')">Y Gate</button>
+      <button onclick="startPuzzle('Z')">Z Gate</button>
+      <button onclick="startPuzzle('S')">S Gate</button>
+      <button onclick="startPuzzle('T')">T Gate</button>
+      <button onclick="startPuzzle('ROT-X')">ROT-X Gate</button>
+      <button onclick="startPuzzle('ROT-Y')">ROT-Y Gate</button>
+      <button onclick="startPuzzle('ROT-Z')">ROT-Z Gate</button>
+      <button onclick="startPuzzle('I')">I Gate</button>
+    </div>
+    
+    <!-- Puzzle Grid -->
+    <div id="konva-canvas"></div>
+    
+    <!-- Submit Button -->
+    <button id="submitButton" onclick="submitPuzzle()">Submit Puzzle</button>
+    <button onclick="showAnswer()">Show Answer</button>
+
+    <!-- Status Display -->
+    <div id="status"></div>
+    <button onclick="resetGame()">Reset Game</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/konva@8.3.5/konva.min.js"></script>
+  <script src="../components/genAIChatSide/chatSide.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

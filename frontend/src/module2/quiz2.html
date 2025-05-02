@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quantum Quiz</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body, html {
+      height: 100%;
+      background-color: #000099;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      color: white;
+    }
+
+    .question {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .option {
+      background-color: #ffeeee;
+      color: black;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .option.correct {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .option.wrong {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .answer {
+      margin-top: 10px;
+      font-size: 1.3rem;
+      color: yellow;
+      font-weight: bold;
+      min-height: 30px;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: white;
+      color: #000099;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #ddddff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="question-container">
+      <!-- Question and options will render here -->
+    </div>
+    <div class="answer" id="answer"></div>
+    <div class="navigation">
+      <button onclick="handleNext()" id="nextBtn">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+    {
+    text: "Q-1. : What do quantum gates operate on?",
+    options: [
+      { label: "A", text: "Classical bits" },
+      { label: "B", text: "Qubits " },
+      { label: "C", text: "Numbers Only" },
+    ],
+    correct: "B"
+  },
+  {
+    text: "Q-2. :  What is a key difference between quantum gates and classical logic gates? ",
+    options: [
+      { label: "A", text: "Quantum gates are slower" },
+      { label: "B", text: "Quantum gates work on qubits in superposition" },
+      { label: "C", text: "Classical gates are reversible, quantum gates are not" },
+    ],
+    correct: "B"
+  },
+  {
+    text: "Q-3. : What does the Hadamard gate do?",
+    options: [
+      { label: "A", text: " Creates superposition" },
+      { label: "B", text: " Measures the qubit" },
+      { label: "C", text: " Flips the qubit from 0 to 1" },
+  ],
+    correct: "A"
+  },
+  {
+    text: "Q-4. :What is the function of the CNOT gate?",
+    options: [
+      { label: "A", text: " Adds two qubits together" },
+      { label: "B", text: "Destroys entanglement" },
+      { label: "C", text: " Creates entanglement between qubits" },
+    ],
+    correct: "C"
+  },
+  {
+    text: "Q-5. :What is a quantum circuit?",
+    options: [
+      { label: "A", text: " A single quantum gate" },
+      { label: "B", text: " A wire used to connect qubits" },
+      { label: "C", text: " A sequence of gates applied to qubits to perform a computation" },
+    ],
+    correct: "C"
+  }
+    ];
+
+    let currentQuestion = 0;
+    let answered = false;
+
+    function renderQuestion() {
+      const container = document.getElementById("question-container");
+      const q = questions[currentQuestion];
+      answered = false;
+      document.getElementById("answer").textContent = "";
+
+      container.innerHTML = `
+        <div class="question">${q.text}</div>
+        ${q.options.map(opt => `
+          <div class="option" onclick="checkAnswer(this, '${opt.label}')">${opt.label}. ${opt.text}</div>
+        `).join("")}
+      `;
+
+      const nextBtn = document.getElementById("nextBtn");
+      nextBtn.textContent = currentQuestion === questions.length - 1 ? "Back to Modules" : "Next";
+
+    }
+
+    function checkAnswer(element, choice) {
+      if (answered) return;
+      answered = true;
+
+      const correct = questions[currentQuestion].correct;
+      const options = document.querySelectorAll('.option');
+
+      options.forEach(opt => {
+        opt.classList.remove('correct', 'wrong');
+        opt.style.pointerEvents = 'none';
+      });
+
+      if (choice === correct) {
+        element.classList.add('correct');
+        document.getElementById('answer').textContent = `Correct! The right answer is ${getOptionText(correct)}.`;
+      } else {
+        element.classList.add('wrong');
+        options.forEach(opt => {
+          if (opt.textContent.startsWith(correct)) {
+            opt.classList.add('correct');
+          }
+        });
+        document.getElementById('answer').textContent = `Wrong! The correct answer is ${getOptionText(correct)}.`;
+      }
+    }
+
+    function getOptionText(label) {
+      const q = questions[currentQuestion];
+      return q.options.find(opt => opt.label === label).text;
+    }
+
+    function handleNext() {
+      if (currentQuestion === questions.length - 1) {
+        window.location.href = "module2.html"; // 
+      } else {
+        currentQuestion++;
+        renderQuestion();
+      }
+    }
+
+    // Initial render
+    renderQuestion();
+  </script>
+</body>
+</html>
+
+
+
